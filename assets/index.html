@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Autocomple con typeahead.js</title>
+</head>
+<body>
+	<div id="remote">
+	  <p><input id="id_buscar" class="input_buscar" type="text" placeholder="Buscar..."></p>
+	  <p><input id="id_phone_number" class="input_buscar" type="text" placeholder="Telefono"></p>
+	  <p><input id="id_address" class="input_buscar" type="text" placeholder="Dirección"></p>
+	  <p><input id="id_email" class="input_buscar" type="text" placeholder="Email"></p>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="./js/jquery-ui/jquery-ui.min.js"></script>
+	<script>
+	var $id_buscar = $('#id_buscar');
+	var $id_phone_number = $('#id_phone_number');
+	var $id_address = $('#id_address');
+	var $id_email = $('#id_email');
+	var arrayElements = [];
+
+	$($id_buscar).autocomplete({
+		source: function (req, res) {
+			console.log(req.term);
+			var url = '/user?where={"name":{"contains":"' + req.term + '"}}';
+			console.log(url);
+			$.getJSON(url, function (data) {
+			    console.log(data);
+			    arrayElements = [];
+			    for (var i = 0; i < data.length; i++)
+			    {
+			    	console.log(data[i]);
+			    	arrayElements[i] = { label: data[i].name, value: data[i].name };
+			    }
+			    console.log(arrayElements);
+			    res(arrayElements);
+			});
+		}
+	});
+
+	$($id_buscar).on( "autocompletechange", function (event, ui) {
+		console.log("Change");
+	});
+
+	$($id_buscar).on( "autocompletefocus", function (event, ui) {
+		console.log("Focus");
+	});
+
+	$($id_buscar).on( "autocompleteopen", function (event, ui) {
+		console.log("Open");
+	});
+
+	$($id_buscar).on( "autocompleteselect", function (event, ui) {
+		console.log("Select");
+		console.log(event);
+		console.log(ui);
+	});
+	</script>
+</body>
+</html>
